@@ -5,8 +5,8 @@
 #include <ctype.h>
 
 #if defined WIN32
-#include <winsock2.h>
-#define NO_CLIENT_LONG_LONG
+#   include <winsock2.h>
+#   define NO_CLIENT_LONG_LONG
 #endif
 
 #define LUA_LIB
@@ -14,13 +14,13 @@
 #include <mysql.h>
 
 #if defined _MSC_VER
-#	include <lua.hpp>
-#	include <malloc.h>
-#	define dynarray(type, name, size) type* name = (type*)_alloca((size) * sizeof(type))
+#   include <lua.hpp>
+#   include <malloc.h>
+#   define dynarray(type, name, size) type* name = (type*)_alloca((size) * sizeof(type))
 #else
-#	include <lua.h>
-#	include <lauxlib.h>
-#	define dynarray(type, name, size) type name[size]
+#   include <lua.h>
+#   include <lauxlib.h>
+#   define dynarray(type, name, size) type name[size]
 #endif
 
 #define LUA_MYSQL_USE_RESULT    0
@@ -40,7 +40,7 @@ typedef struct {
     int            field;
     MYSQL_ROW      row;
     unsigned long *lengths;
-	unsigned int   numcols;
+    unsigned int   numcols;
     MYSQL_RES     *res;
 } lua_mysql_res;
 
@@ -109,7 +109,7 @@ lm_get_res(lua_State *L) {
 
 static int
 Lmysql_version(lua_State *L) {
-	int n = lua_gettop(L);
+    int n = lua_gettop(L);
 #ifdef LIBMYSQL_VERSION
     lua_pushfstring(L, "LIBMYSQL_VERSION     = %s\n", LIBMYSQL_VERSION);
 #endif
@@ -318,7 +318,7 @@ static int
 Lmysql_escape_string(lua_State *L) {
     size_t st_len = 0;
     const char *unescaped_string = luaL_checklstring(L, 1, &st_len);
-	dynarray(char, to, st_len * 2 + 1);
+    dynarray(char, to, st_len * 2 + 1);
     mysql_escape_string(to, unescaped_string, st_len);
     lua_pushstring(L, to);
     return 1;
@@ -329,7 +329,7 @@ Lmysql_real_escape_string(lua_State *L) {
     lua_mysql_conn *my_conn = lm_get_conn(L);
     size_t st_len = 0;
     const char *unescaped_string = luaL_checklstring(L, 2, &st_len);
-	dynarray(char, to, st_len * 2 + 1);
+    dynarray(char, to, st_len * 2 + 1);
     mysql_real_escape_string(my_conn->conn, to, unescaped_string, st_len);
     lua_pushstring(L, to);
     return 1;
